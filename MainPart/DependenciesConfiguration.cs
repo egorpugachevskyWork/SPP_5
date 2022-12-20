@@ -17,13 +17,10 @@ public class DependenciesConfiguration
                                                                             TDependency.IsAssignableFrom(
                                                                                 TImplementation)))
         {
-            if (EnumerableServices.ContainsKey(TDependency))
-                EnumerableServices[TDependency].Add(new ImplementationInfo(timeToLive, TImplementation, index));
-            else
-            {
-                EnumerableServices[TDependency] = new List<ImplementationInfo>()
-                    { new(timeToLive, TImplementation, index) };
-            }
+            if (!EnumerableServices.ContainsKey(TDependency))
+                EnumerableServices[TDependency] = new List<ImplementationInfo>(){ };
+
+            EnumerableServices[TDependency].Add(new ImplementationInfo(timeToLive, TImplementation, index));
         }
     }
 }

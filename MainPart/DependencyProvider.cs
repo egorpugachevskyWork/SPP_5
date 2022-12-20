@@ -96,25 +96,13 @@ public class DependencyProvider
         
         var parameters = constructor.GetParameters();
         object instance;
-        if (parameters.Length == 0)
+        object[] initializedParameters = new object[parameters.Length];
+        for (int i = 0; i < parameters.Length; i++)
         {
-            instance = Activator.CreateInstance(instanceType);
-            if (implementation.TimeToLive == LivingTime.Singleton)
-            {
-                _singletonDependency[instanceType] = instance;
-            }
-
-            return instance;
+            initializedParameters[i] = Resolve(parameters[i].ParameterType);
         }
-
-        List<object> initializedParameters = new List<object>(parameters.Length);
-        foreach (var param in parameters)
-        {
-            initializedParameters.Add(Resolve(param.ParameterType));
-        }
-
         
-        instance = constructor.Invoke(initializedParameters.ToArray());
+        instance = constructor.Invoke(initializedParameters);
 
         if (implementation.TimeToLive == LivingTime.Singleton)
         {
